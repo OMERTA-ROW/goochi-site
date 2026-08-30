@@ -2,13 +2,13 @@
 
 /* ============================================================
    6CRYPTO6GOOCHI6 — house styles
-   Palette: ink + aubergine + royal purple, antique gold hairlines
+   Palette: black + gold, antique gold hairlines
    ============================================================ */
 
 :root {
-  --ink:        #08050C;
-  --plum:       #150A1E;
-  --plum-lift:  #1E0F2B;
+  --ink:        #000000;
+  --plum:       #0A0A0A;
+  --plum-lift:  #141414;
   --royal:      #5B21B6;
   --violet:     #A855F7;
   --gold:       #C9A227;
@@ -19,7 +19,6 @@
   --edge: 1px solid rgba(201, 162, 39, 0.22);
   --shell: 1180px;
 
-  /* font families come from next/font/google, wired up in app/layout.tsx */
   --display: var(--font-display), Georgia, serif;
   --body: var(--font-body), system-ui, sans-serif;
   --util: var(--font-util), ui-monospace, monospace;
@@ -31,24 +30,12 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--ink);
+  background: #000;
   color: var(--bone);
   font-family: var(--body);
   font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-}
-
-/* ambient purple haze, sits behind everything */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(900px 620px at 50% -10%, rgba(91, 33, 182, 0.38), transparent 70%),
-    radial-gradient(700px 500px at 100% 100%, rgba(168, 85, 247, 0.10), transparent 70%);
 }
 
 main { position: relative; z-index: 1; }
@@ -72,7 +59,6 @@ a { color: inherit; text-decoration: none; }
 .band { padding: 120px 0; border-top: var(--edge); }
 .band--flush { border-top: none; }
 
-/* catalogue-style section label */
 .eyebrow {
   font-family: var(--util);
   font-size: 11px;
@@ -116,7 +102,7 @@ p { color: var(--muted); max-width: 62ch; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 50;
-  background: rgba(8, 5, 12, 0.72);
+  background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(14px);
   border-bottom: var(--edge);
 }
@@ -149,11 +135,27 @@ p { color: var(--muted); max-width: 62ch; }
 /* ---------- hero ---------- */
 
 .hero {
+  position: relative;
+  overflow: hidden;
+  background: #000;
   min-height: 100svh;
   display: flex;
   align-items: center;
   padding: 120px 0 80px;
 }
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  z-index: 0;
+}
+
+.hero .shell { position: relative; z-index: 1; }
+
 .hero-grid {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -172,95 +174,23 @@ p { color: var(--muted); max-width: 62ch; }
 }
 .hero-actions { margin-top: 40px; display: flex; gap: 14px; flex-wrap: wrap; }
 
+/* ---------- hero figure ---------- */
+
+.hero-figure-wrap { display: flex; justify-content: center; }
+
+.hero-figure {
+  max-height: 640px;
+  width: auto;
+  filter: drop-shadow(0 0 70px rgba(0, 0, 0, 0.95));
+}
+
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-  .hero-coin-wrap { order: -1; }
-}
-
-/* ---------- the coin (signature element) ---------- */
-
-.hero-coin-wrap { display: flex; justify-content: center; }
-
-.coin {
-  position: relative;
-  width: min(400px, 78vw);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  padding: 9px;
-  background: repeating-conic-gradient(
-    from 0deg,
-    var(--gold-lift) 0deg 0.7deg,
-    #7A6018 0.7deg 1.4deg
-  );
-  box-shadow:
-    0 40px 90px -20px rgba(0, 0, 0, 0.85),
-    0 0 70px -10px rgba(91, 33, 182, 0.5);
-  animation: coin-float 7s ease-in-out infinite;
-}
-
-.coin-face {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 26%, #4C1D95 0%, #2A0E3C 52%, #16081F 100%);
-  border: 2px solid rgba(232, 206, 122, 0.55);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-/* engraved guilloché rings */
-.coin-face::before {
-  content: "";
-  position: absolute;
-  inset: 26px;
-  border-radius: 50%;
-  border: 1px solid rgba(232, 206, 122, 0.3);
-}
-.coin-face::after {
-  content: "";
-  position: absolute;
-  inset: 34px;
-  border-radius: 50%;
-  border: 1px dashed rgba(232, 206, 122, 0.16);
-}
-
-.coin-arc { position: absolute; inset: 0; }
-.coin-arc text {
-  font-family: var(--util);
-  font-size: 6.4px;
-  letter-spacing: 0.42em;
-  fill: var(--gold-lift);
-  text-transform: uppercase;
-}
-
-.coin-core { position: relative; text-align: center; z-index: 2; }
-.coin-mono {
-  font-family: var(--display);
-  font-size: clamp(56px, 13vw, 84px);
-  font-weight: 700;
-  color: var(--gold-lift);
-  line-height: 1;
-  letter-spacing: -0.06em;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
-}
-.coin-denom {
-  font-family: var(--util);
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  color: rgba(232, 206, 122, 0.75);
-  margin-top: 10px;
-}
-
-@keyframes coin-float {
-  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-  50%      { transform: translateY(-16px) rotate(1.2deg); }
+  .hero-figure-wrap { order: -1; }
+  .hero-figure { max-height: 420px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .coin { animation: none; }
   html { scroll-behavior: auto; }
 }
 
@@ -332,7 +262,7 @@ p { color: var(--muted); max-width: 62ch; }
   transition: background 0.2s;
 }
 .mint:last-child { border-bottom: 1px solid rgba(201, 162, 39, 0.16); }
-.mint:hover { background: rgba(91, 33, 182, 0.12); }
+.mint:hover { background: rgba(201, 162, 39, 0.06); }
 .mint-no {
   font-family: var(--util);
   font-size: 12px;
@@ -392,8 +322,7 @@ p { color: var(--muted); max-width: 62ch; }
 .vault {
   border: var(--edge);
   border-radius: 4px;
-  background:
-    linear-gradient(160deg, rgba(91, 33, 182, 0.22), rgba(21, 10, 30, 0.9));
+  background: linear-gradient(160deg, rgba(201, 162, 39, 0.08), rgba(0, 0, 0, 0.9));
   padding: 70px 50px;
   text-align: center;
 }
@@ -439,7 +368,7 @@ p { color: var(--muted); max-width: 62ch; }
 }
 .field input {
   flex: 1;
-  background: rgba(8, 5, 12, 0.7);
+  background: rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(201, 162, 39, 0.3);
   border-radius: 2px;
   color: var(--bone);
