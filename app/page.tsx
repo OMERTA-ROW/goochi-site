@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const CATALOGUE = [
   {
@@ -44,9 +44,111 @@ const SOUVENIRS = [
   },
 ];
 
+const COIN_CSS = `
+  .hero .hero-grid{
+    display:grid;
+    grid-template-columns:1fr 0.82fr 0.44fr;
+    gap:34px;
+    align-items:center;
+  }
+  .hero-coin-col{ display:flex; justify-content:center; align-items:center; }
+  .hero-coin-slot{ position:relative; perspective:1300px; }
+
+  .hero-coin{
+    width:196px; height:196px; position:relative; transform-style:preserve-3d;
+    cursor:pointer; border:0; padding:0; background:none;
+    animation:coinFloat 6s ease-in-out infinite;
+    transition:transform .9s cubic-bezier(.2,.7,.2,1), filter .4s ease;
+    filter:drop-shadow(0 18px 30px rgba(0,0,0,.8));
+  }
+  .hero-coin:hover{
+    filter:drop-shadow(0 22px 36px rgba(0,0,0,.85)) drop-shadow(0 0 24px rgba(201,162,39,.4));
+  }
+  .hero-coin:focus-visible{ outline:1px solid #8A6E1B; outline-offset:18px; border-radius:50%; }
+  .hero-coin.is-flipped{ transform:rotateY(180deg); }
+
+  .hero-coin-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    background-size:contain; background-repeat:no-repeat; background-position:center;
+  }
+  .hero-coin-face--back{ transform:rotateY(180deg); }
+
+  .hero-coin-sheen{
+    position:absolute; inset:0; border-radius:50%; pointer-events:none; mix-blend-mode:screen;
+    background:linear-gradient(115deg,transparent 34%,rgba(240,220,154,.20) 46%,rgba(255,255,255,.30) 50%,rgba(240,220,154,.18) 54%,transparent 66%);
+    background-size:280% 280%;
+    animation:coinSheen 7s linear infinite;
+  }
+  @keyframes coinSheen{ 0%{background-position:130% 0} 100%{background-position:-30% 0} }
+  @keyframes coinFloat{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  .hero-coin-tag{
+    position:absolute; top:calc(100% + 14px); left:50%; transform:translateX(-50%);
+    white-space:nowrap; font-size:9.5px; letter-spacing:.26em;
+    text-transform:uppercase; color:#5d564d;
+  }
+
+  .coin-scrim{
+    position:fixed; inset:0; background:rgba(4,3,3,.84); backdrop-filter:blur(7px);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    opacity:0; pointer-events:none; transition:opacity .34s ease; z-index:80;
+  }
+  .coin-scrim.is-open{ opacity:1; pointer-events:auto; }
+  .coin-panel{
+    width:min(480px,100%); background:linear-gradient(180deg,#141110,#0c0a09);
+    border:1px solid rgba(201,162,39,.26); padding:42px 38px 34px; position:relative;
+    transform:translateY(16px) scale(.97); transition:transform .34s cubic-bezier(.2,.7,.2,1);
+  }
+  .coin-scrim.is-open .coin-panel{ transform:none; }
+  .coin-panel:before{
+    content:""; position:absolute; left:38px; right:38px; top:0; height:1px;
+    background:linear-gradient(90deg,transparent,#C9A227,transparent);
+  }
+  .coin-panel h2{ font-size:31px; margin:14px 0 8px; }
+  .coin-panel h2 em{ font-style:normal; color:#F0DC9A; }
+  .coin-panel p{ color:#948B81; font-size:14.5px; line-height:1.72; margin:0 0 22px; }
+  .coin-rows{ border-top:1px solid rgba(255,255,255,.07); margin-bottom:8px; }
+  .coin-row{
+    display:flex; justify-content:space-between; gap:16px; padding:13px 0;
+    border-bottom:1px solid rgba(255,255,255,.07); font-size:13.5px; color:#E8E1D4;
+  }
+  .coin-row span:first-child{
+    color:#736b62; font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; padding-top:2px;
+  }
+  .coin-row span:last-child{ text-align:right; }
+  .coin-close{
+    position:absolute; top:14px; right:16px; background:none; border:0; cursor:pointer;
+    color:#6b635a; font-size:22px; line-height:1; padding:6px;
+  }
+  .coin-close:hover{ color:#E8E1D4; }
+  .coin-fine{ font-size:11.5px; color:#5d564d; line-height:1.6; margin:20px 0 0; }
+
+  @media (max-width:980px){
+    .hero .hero-grid{ grid-template-columns:1fr 1fr; gap:24px; }
+    .hero .hero-grid > :first-child{ grid-column:1 / -1; }
+  }
+  @media (max-width:700px){
+    .hero .hero-grid{ grid-template-columns:1fr; gap:18px; }
+    .hero-coin{ width:150px; height:150px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .hero-coin, .hero-coin-sheen{ animation:none; }
+  }
+`;
+
 export default function Home() {
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
+  const [coinOpen, setCoinOpen] = useState(false);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setCoinOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   function join() {
     if (!email.includes("@")) {
@@ -59,6 +161,8 @@ export default function Home() {
 
   return (
     <>
+      <style>{COIN_CSS}</style>
+
       <nav className="nav">
         <div className="shell nav-inner">
           <div className="nav-mark">
@@ -114,6 +218,30 @@ export default function Home() {
                 src="/goochi.png"
                 alt="6CRYPTO6GOOCHI6"
               />
+            </div>
+
+            <div className="hero-coin-col">
+              <div className="hero-coin-slot">
+                <button
+                  className={coinOpen ? "hero-coin is-flipped" : "hero-coin"}
+                  onClick={() => setCoinOpen((v) => !v)}
+                  aria-label="Open house currency details"
+                >
+                  <div
+                    className="hero-coin-face"
+                    style={{ backgroundImage: "url(/coin-front.png)" }}
+                  >
+                    <div className="hero-coin-sheen" />
+                  </div>
+                  <div
+                    className="hero-coin-face hero-coin-face--back"
+                    style={{ backgroundImage: "url(/coin-back.png)" }}
+                  >
+                    <div className="hero-coin-sheen" />
+                  </div>
+                </button>
+                <div className="hero-coin-tag">Tap the coin</div>
+              </div>
             </div>
           </div>
         </section>
@@ -276,6 +404,62 @@ export default function Home() {
           <div>6 · CRYPTO · 6 · GOOCHI · 6</div>
         </footer>
       </main>
+
+      {/* ---------------- coin popup ---------------- */}
+      <div
+        className={coinOpen ? "coin-scrim is-open" : "coin-scrim"}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setCoinOpen(false);
+        }}
+      >
+        <div
+          className="coin-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="coin-title"
+        >
+          <button
+            className="coin-close"
+            onClick={() => setCoinOpen(false)}
+            aria-label="Close"
+          >
+            ×
+          </button>
+          <div className="seal">
+            <span className="seal-dot" />
+            Coming soon
+          </div>
+          <h2 id="coin-title">
+            The house <em>currency</em>.
+          </h2>
+          <p>
+            A membership piece for the people who build this with us. Struck for
+            the room, not for the market.
+          </p>
+          <div className="coin-rows">
+            <div className="coin-row">
+              <span>Mark</span>
+              <span>6C · 6G · 6</span>
+            </div>
+            <div className="coin-row">
+              <span>House</span>
+              <span>Omerta Row</span>
+            </div>
+            <div className="coin-row">
+              <span>Struck</span>
+              <span>Est. 2024</span>
+            </div>
+            <div className="coin-row">
+              <span>Holds</span>
+              <span>Room passes, first listens, the vote</span>
+            </div>
+          </div>
+          <p className="coin-fine">
+            Not tied to revenue. Not an investment. A door code, an early seat
+            and a say in what gets pressed next.
+          </p>
+        </div>
+      </div>
     </>
   );
 }
