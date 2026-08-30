@@ -53,7 +53,6 @@ export default function Home() {
       setNote("Enter a valid email address.");
       return;
     }
-    // TODO: point this at your mailing list provider or a Next.js API route.
     setNote("You are on the list.");
     setEmail("");
   }
@@ -78,6 +77,14 @@ export default function Home() {
       <main>
         {/* ---------------- hero ---------------- */}
         <section className="hero">
+          <video
+            className="hero-video"
+            src="/goochi-hero.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
           <div className="shell hero-grid">
             <div>
               <p className="eyebrow">Omerta Row presents</p>
@@ -101,44 +108,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hero-coin-wrap">
-              <div className="coin">
-                <div className="coin-face">
-                  <svg className="coin-arc" viewBox="0 0 100 100" aria-hidden="true">
-                    <defs>
-                      <path
-                        id="arcTop"
-                        d="M 50,50 m -39,0 a 39,39 0 1,1 78,0"
-                        fill="none"
-                      />
-                      <path
-                        id="arcBottom"
-                        d="M 50,50 m -35,0 a 35,35 0 1,0 70,0"
-                        fill="none"
-                      />
-                    </defs>
-                    <text>
-                      <textPath href="#arcTop" startOffset="50%" textAnchor="middle">
-                        DIGITAL LUXURY CURRENCY
-                      </textPath>
-                    </text>
-                    <text>
-                      <textPath
-                        href="#arcBottom"
-                        startOffset="50%"
-                        textAnchor="middle"
-                      >
-                        6 CRYPTO 6 GOOCHI 6
-                      </textPath>
-                    </text>
-                  </svg>
-
-                  <div className="coin-core">
-                    <div className="coin-mono">CG</div>
-                    <div className="coin-denom">EST 2026</div>
-                  </div>
-                </div>
-              </div>
+            <div className="hero-figure-wrap">
+              <img
+                className="hero-figure"
+                src="/goochi.png"
+                alt="6CRYPTO6GOOCHI6"
+              />
             </div>
           </div>
         </section>
